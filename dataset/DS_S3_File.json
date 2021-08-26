@@ -13,6 +13,9 @@
 			"P_directory": {
 				"type": "string",
 				"defaultValue": "database"
+			},
+			"P_file_name": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
