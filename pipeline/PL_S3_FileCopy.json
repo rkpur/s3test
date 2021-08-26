@@ -95,8 +95,14 @@
 									"referenceName": "DS_S3_File",
 									"type": "DatasetReference",
 									"parameters": {
-										"P_bucket": "export-filevine-5",
-										"P_directory": "database",
+										"P_bucket": {
+											"value": "@pipeline().parameters.P_container_name",
+											"type": "Expression"
+										},
+										"P_directory": {
+											"value": "@pipeline().parameters.P_folder_name",
+											"type": "Expression"
+										},
 										"P_file_name": {
 											"value": "@item()",
 											"type": "Expression"
