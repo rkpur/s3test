@@ -7,10 +7,12 @@
 		},
 		"parameters": {
 			"P_container_name": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "blob-s3"
 			},
 			"P_folder": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "src"
 			}
 		},
 		"annotations": [],
