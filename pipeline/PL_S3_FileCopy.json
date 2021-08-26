@@ -147,10 +147,12 @@
 				"defaultValue": "database"
 			},
 			"P_adls_container_name": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "blob-s3"
 			},
 			"P_adls_folder": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "src"
 			}
 		},
 		"annotations": []
