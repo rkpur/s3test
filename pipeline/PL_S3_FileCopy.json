@@ -20,7 +20,8 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"P_bucket": "export-filevine-5",
-							"P_directory": "database"
+							"P_directory": "database",
+							"P_file_name": "*"
 						}
 					},
 					"fieldList": [],
