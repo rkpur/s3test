@@ -1,0 +1,34 @@
+{
+	"name": "DS_S3_File",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AmazonS31",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"P_bucket": {
+				"type": "string",
+				"defaultValue": "export-filevine-5"
+			},
+			"P_directory": {
+				"type": "string",
+				"defaultValue": "database"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AmazonS3Location",
+				"bucketName": {
+					"value": "@dataset().P_bucket",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().P_directory",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}
