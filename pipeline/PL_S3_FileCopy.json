@@ -51,7 +51,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('GM_S3_Files').output.items()",
+						"value": "@activity('GM_S3_Files').output.childitems",
 						"type": "Expression"
 					},
 					"isSequential": true,
