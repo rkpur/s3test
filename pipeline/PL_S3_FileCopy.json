@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "GM_S3_Files",
-				"type": "GetMetadata",
+				"name": "CD_S3_to_ADLS",
+				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
@@ -15,7 +15,28 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"dataset": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AmazonS3ReadSettings",
+							"recursive": false,
+							"modifiedDatetimeStart": "2021-08-20T00:00:00.000Z",
+							"deleteFilesAfterCompletion": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
 						"referenceName": "DS_S3_File",
 						"type": "DatasetReference",
 						"parameters": {
@@ -27,112 +48,29 @@
 								"value": "@pipeline().parameters.P_s3_folder",
 								"type": "Expression"
 							},
-							"P_file_name": "*.*"
+							"P_file_name": {
+								"value": "*.*",
+								"type": "Expression"
+							}
 						}
-					},
-					"fieldList": [
-						"childItems"
-					],
-					"storeSettings": {
-						"type": "AmazonS3ReadSettings",
-						"modifiedDatetimeStart": "2021-08-20T00:00:00.000Z",
-						"enablePartitionDiscovery": false
-					},
-					"formatSettings": {
-						"type": "BinaryReadSettings"
-					}
-				}
-			},
-			{
-				"name": "FE_S3_File",
-				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "GM_S3_Files",
-						"dependencyConditions": [
-							"Succeeded"
-						]
 					}
 				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('GM_S3_Files').output.childitems",
-						"type": "Expression"
-					},
-					"isSequential": true,
-					"activities": [
-						{
-							"name": "CD_S3_to_ADLS",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
+				"outputs": [
+					{
+						"referenceName": "DS_ADLS_Blob",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_container_name": {
+								"value": "@pipeline().parameters.P_adls_container_name",
+								"type": "Expression"
 							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "BinarySource",
-									"storeSettings": {
-										"type": "AmazonS3ReadSettings",
-										"recursive": false,
-										"deleteFilesAfterCompletion": false
-									},
-									"formatSettings": {
-										"type": "BinaryReadSettings"
-									}
-								},
-								"sink": {
-									"type": "BinarySink",
-									"storeSettings": {
-										"type": "AzureBlobStorageWriteSettings"
-									}
-								},
-								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "DS_S3_File",
-									"type": "DatasetReference",
-									"parameters": {
-										"P_bucket": {
-											"value": "@pipeline().parameters.P_s3_bucket_name",
-											"type": "Expression"
-										},
-										"P_folder": {
-											"value": "@pipeline().parameters.P_s3_folder",
-											"type": "Expression"
-										},
-										"P_file_name": {
-											"value": "@item()",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "DS_ADLS_Blob",
-									"type": "DatasetReference",
-									"parameters": {
-										"P_container_name": {
-											"value": "@pipeline().parameters.P_adls_container_name",
-											"type": "Expression"
-										},
-										"P_folder": {
-											"value": "@pipeline().parameters.P_adls_folder",
-											"type": "Expression"
-										}
-									}
-								}
-							]
+							"P_folder": {
+								"value": "@pipeline().parameters.P_adls_folder",
+								"type": "Expression"
+							}
 						}
-					]
-				}
+					}
+				]
 			}
 		],
 		"parameters": {
