@@ -21,10 +21,12 @@
 						"parameters": {
 							"P_bucket": "export-filevine-5",
 							"P_directory": "database",
-							"P_file_name": "*"
+							"P_file_name": "*.*"
 						}
 					},
-					"fieldList": [],
+					"fieldList": [
+						"childItems"
+					],
 					"storeSettings": {
 						"type": "AmazonS3ReadSettings",
 						"modifiedDatetimeStart": "2021-08-20T00:00:00.000Z",
