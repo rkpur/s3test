@@ -31,8 +31,7 @@
 						}
 					},
 					"fieldList": [
-						"childItems",
-						"lastModified"
+						"childItems"
 					],
 					"storeSettings": {
 						"type": "AmazonS3ReadSettings",
