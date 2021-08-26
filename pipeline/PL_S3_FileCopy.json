@@ -1,0 +1,124 @@
+{
+	"name": "PL_S3_FileCopy",
+	"properties": {
+		"activities": [
+			{
+				"name": "GM_S3_Files",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_S3_File",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_bucket": "export-filevine-5",
+							"P_directory": "database"
+						}
+					},
+					"fieldList": [],
+					"storeSettings": {
+						"type": "AmazonS3ReadSettings",
+						"modifiedDatetimeStart": "2021-08-20T00:00:00.000Z",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "FE_S3_File",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "GM_S3_Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GM_S3_Files').output.items()",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "CD_S3_to_ADLS",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AmazonS3ReadSettings",
+										"recursive": true,
+										"prefix": "",
+										"deleteFilesAfterCompletion": false
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings",
+										"compressionProperties": {
+											"type": "ZipDeflateReadSettings",
+											"preserveZipFileNameAsFolder": false
+										}
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_S3_File",
+									"type": "DatasetReference",
+									"parameters": {
+										"P_bucket": "export-filevine-5",
+										"P_directory": "database",
+										"P_file_name": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_ADLS_Blob",
+									"type": "DatasetReference",
+									"parameters": {
+										"P_container_name": "blob-s3",
+										"P_folder": "src"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"annotations": []
+	}
+}
