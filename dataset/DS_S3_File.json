@@ -28,6 +28,10 @@
 					"value": "@dataset().P_directory",
 					"type": "Expression"
 				}
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Optimal"
 			}
 		}
 	}
