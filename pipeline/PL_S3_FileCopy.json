@@ -115,8 +115,18 @@
 									"referenceName": "DS_ADLS_Blob",
 									"type": "DatasetReference",
 									"parameters": {
-										"P_container_name": "blob-s3",
-										"P_folder": "src"
+										"P_container_name": {
+											"value": "@pipeline().parameters.P_container_name",
+											"type": "Expression"
+										},
+										"P_folder": {
+											"value": "@pipeline().parameters.P_folder",
+											"type": "Expression"
+										},
+										"P_file_name": {
+											"value": "@pipeline().parameters.P_file_name",
+											"type": "Expression"
+										}
 									}
 								}
 							]
