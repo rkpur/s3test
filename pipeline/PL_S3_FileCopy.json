@@ -102,11 +102,11 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"P_bucket": {
-											"value": "@pipeline().parameters.P_container_name",
+											"value": "@pipeline().parameters.P_s3_bucket_name",
 											"type": "Expression"
 										},
 										"P_folder": {
-											"value": "@pipeline().parameters.P_folder",
+											"value": "@pipeline().parameters.P_s3_folder",
 											"type": "Expression"
 										},
 										"P_file_name": {
