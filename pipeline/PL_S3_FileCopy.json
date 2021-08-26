@@ -47,10 +47,6 @@
 							"P_folder": {
 								"value": "@pipeline().parameters.P_s3_folder",
 								"type": "Expression"
-							},
-							"P_file_name": {
-								"value": "*.*",
-								"type": "Expression"
 							}
 						}
 					}
