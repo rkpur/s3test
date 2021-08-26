@@ -10,7 +10,7 @@
 				"type": "string",
 				"defaultValue": "export-filevine-5"
 			},
-			"P_directory": {
+			"P_folder": {
 				"type": "string",
 				"defaultValue": "database"
 			},
