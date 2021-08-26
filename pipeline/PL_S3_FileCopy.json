@@ -122,11 +122,11 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"P_container_name": {
-											"value": "@pipeline().parameters.P_container_name",
+											"value": "@pipeline().parameters.P_adls_container_name",
 											"type": "Expression"
 										},
 										"P_folder": {
-											"value": "@pipeline().parameters.P_folder",
+											"value": "@pipeline().parameters.P_adls_folder",
 											"type": "Expression"
 										}
 									}
