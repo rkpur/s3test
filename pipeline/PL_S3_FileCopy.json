@@ -119,6 +119,20 @@
 				}
 			}
 		],
+		"parameters": {
+			"P_container_name": {
+				"type": "string",
+				"defaultValue": "export-filevine-5"
+			},
+			"P_folder_name": {
+				"type": "string",
+				"defaultValue": "src"
+			},
+			"P_file_name": {
+				"type": "string",
+				"defaultValue": "test"
+			}
+		},
 		"annotations": []
 	}
 }
