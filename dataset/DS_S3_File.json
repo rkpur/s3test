@@ -13,9 +13,6 @@
 			"P_folder": {
 				"type": "string",
 				"defaultValue": "database"
-			},
-			"P_file_name": {
-				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -29,10 +26,6 @@
 				},
 				"folderPath": {
 					"value": "@dataset().P_folder",
-					"type": "Expression"
-				},
-				"fileName": {
-					"value": "@dataset().P_file_name",
 					"type": "Expression"
 				}
 			}
