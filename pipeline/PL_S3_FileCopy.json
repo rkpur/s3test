@@ -20,7 +20,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"P_bucket": {
-								"value": "@pipeline().parameters.P_adls_container_name",
+								"value": "@pipeline().parameters.P_s3_bucket_name",
 								"type": "Expression"
 							},
 							"P_folder": {
