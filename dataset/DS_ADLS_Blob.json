@@ -19,7 +19,15 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobStorageLocation"
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@dataset().P_folder",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().P_container_name",
+					"type": "Expression"
+				}
 			}
 		}
 	}
