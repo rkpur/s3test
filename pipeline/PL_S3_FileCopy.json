@@ -25,11 +25,12 @@
 						}
 					},
 					"fieldList": [
-						"childItems"
+						"childItems",
+						"lastModified"
 					],
 					"storeSettings": {
 						"type": "AmazonS3ReadSettings",
-						"modifiedDatetimeStart": "2021-08-20T00:00:00.000Z",
+						"modifiedDatetimeStart": "2021-08-19T00:00:00.000Z",
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -78,11 +79,7 @@
 										"deleteFilesAfterCompletion": false
 									},
 									"formatSettings": {
-										"type": "BinaryReadSettings",
-										"compressionProperties": {
-											"type": "ZipDeflateReadSettings",
-											"preserveZipFileNameAsFolder": false
-										}
+										"type": "BinaryReadSettings"
 									}
 								},
 								"sink": {
