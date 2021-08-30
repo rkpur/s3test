@@ -20,7 +20,6 @@
 						"storeSettings": {
 							"type": "AmazonS3ReadSettings",
 							"recursive": false,
-							"modifiedDatetimeStart": "2021-08-20T00:00:00.000Z",
 							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
@@ -85,6 +84,10 @@
 			"P_adls_folder": {
 				"type": "string",
 				"defaultValue": "src"
+			},
+			"P_s3_file_date": {
+				"type": "string",
+				"defaultValue": "2021-08-28"
 			}
 		},
 		"annotations": []
