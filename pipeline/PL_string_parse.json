@@ -10,7 +10,7 @@
 				"typeProperties": {
 					"variableName": "v1",
 					"value": {
-						"value": "@(string)indexof(pipeline().parameters.P1,'.')",
+						"value": "@string(indexof(pipeline().parameters.P1,'.'))",
 						"type": "Expression"
 					}
 				}
@@ -24,7 +24,8 @@
 		},
 		"variables": {
 			"v1": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "a"
 			}
 		},
 		"annotations": []
