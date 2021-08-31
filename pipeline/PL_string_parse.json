@@ -10,7 +10,27 @@
 				"typeProperties": {
 					"variableName": "v1",
 					"value": {
-						"value": "@string(indexof(pipeline().parameters.P1,'.'))",
+						"value": "@string(add(indexof(pipeline().parameters.P1,'.'),-17))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable2",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_date_String",
+					"value": {
+						"value": "@string(add(indexof(pipeline().parameters.P1,'.'),-17))",
 						"type": "Expression"
 					}
 				}
@@ -26,6 +46,9 @@
 			"v1": {
 				"type": "String",
 				"defaultValue": "a"
+			},
+			"v_date_String": {
+				"type": "String"
 			}
 		},
 		"annotations": []
