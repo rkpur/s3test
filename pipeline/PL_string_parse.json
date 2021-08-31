@@ -1,6 +1,32 @@
 {
 	"name": "PL_string_parse",
 	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v1",
+					"value": {
+						"value": "@(string)indexof(pipeline().parameters.P1,'.')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"P1": {
+				"type": "string",
+				"defaultValue": "Annuity Production Report (IMO only) - AmeriLife 2021_08_26_081644.xlsx"
+			}
+		},
+		"variables": {
+			"v1": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
