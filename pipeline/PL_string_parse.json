@@ -30,7 +30,7 @@
 				"typeProperties": {
 					"variableName": "v_date_String",
 					"value": {
-						"value": "@substring(pipeline().parameters.P1,variables('v1'),4)",
+						"value": "@substring(pipeline().parameters.P1,int(variables('v1')),4)",
 						"type": "Expression"
 					}
 				}
