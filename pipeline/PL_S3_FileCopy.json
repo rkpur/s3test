@@ -83,7 +83,7 @@
 			},
 			"P_adls_container_name": {
 				"type": "string",
-				"defaultValue": "blob-s3"
+				"defaultValue": "fv-db-bak"
 			},
 			"P_adls_folder": {
 				"type": "string"
