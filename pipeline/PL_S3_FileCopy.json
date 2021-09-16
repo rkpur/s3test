@@ -66,8 +66,7 @@
 							"P_folder": {
 								"value": "@pipeline().parameters.P_adls_folder",
 								"type": "Expression"
-							},
-							"P_file_name": "*.*"
+							}
 						}
 					}
 				]
