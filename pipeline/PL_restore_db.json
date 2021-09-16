@@ -98,6 +98,23 @@
 				}
 			}
 		],
+		"parameters": {
+			"P_adls_container_name": {
+				"type": "string",
+				"defaultValue": "fv-db-bak"
+			},
+			"P_adls_folder": {
+				"type": "string"
+			},
+			"P_adls_file_name": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"V_max_file_name": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
