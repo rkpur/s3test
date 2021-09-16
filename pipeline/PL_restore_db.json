@@ -187,8 +187,7 @@
 							"P_folder": {
 								"value": "@pipeline().parameters.P_adls_folder",
 								"type": "Expression"
-							},
-							"P_file_name": "*.*"
+							}
 						}
 					}
 				],
@@ -197,9 +196,14 @@
 						"referenceName": "DS_ADLS_Blob",
 						"type": "DatasetReference",
 						"parameters": {
-							"P_container_name": "blob-s3",
-							"P_folder": "src",
-							"P_file_name": "*.*"
+							"P_container_name": {
+								"value": "@pipeline().parameters.P_adls_container_name_target",
+								"type": "Expression"
+							},
+							"P_folder": {
+								"value": "@pipeline().parameters.P_adls_folder_target",
+								"type": "Expression"
+							}
 						}
 					}
 				]
