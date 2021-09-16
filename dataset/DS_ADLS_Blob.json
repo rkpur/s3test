@@ -13,6 +13,10 @@
 			"P_folder": {
 				"type": "string",
 				"defaultValue": "src"
+			},
+			"P_file_name": {
+				"type": "string",
+				"defaultValue": "*.*"
 			}
 		},
 		"annotations": [],
