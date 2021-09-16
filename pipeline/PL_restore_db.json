@@ -58,7 +58,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('GM_files').output.childitem",
+						"value": "@activity('GM_files').output.childitems",
 						"type": "Expression"
 					},
 					"isSequential": true,
