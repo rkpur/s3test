@@ -98,14 +98,6 @@
 				"defaultValue": "*.*"
 			}
 		},
-		"variables": {
-			"V_max_file_date": {
-				"type": "String"
-			},
-			"V_max_file_name": {
-				"type": "String"
-			}
-		},
 		"annotations": []
 	}
 }
