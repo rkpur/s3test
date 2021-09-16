@@ -112,7 +112,7 @@
 										"typeProperties": {
 											"variableName": "V_max_file_date",
 											"value": {
-												"value": "@item().name",
+												"value": "@variables('V_file_date')",
 												"type": "Expression"
 											}
 										}
