@@ -281,7 +281,7 @@
 			},
 			"P_folder_del_log": {
 				"type": "string",
-				"defaultValue": "fv-db-log"
+				"defaultValue": "fv-del-log"
 			}
 		},
 		"variables": {
