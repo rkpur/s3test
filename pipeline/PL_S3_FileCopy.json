@@ -40,7 +40,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_S3_File",
+						"referenceName": "DS_S3",
 						"type": "DatasetReference",
 						"parameters": {
 							"P_bucket": {
