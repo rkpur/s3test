@@ -269,10 +269,15 @@
 				"type": "string"
 			},
 			"P_adls_container_name_target": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "fv-db-bak-archive"
 			},
 			"P_adls_folder_target": {
 				"type": "string"
+			},
+			"P_folder_del_log": {
+				"type": "string",
+				"defaultValue": "fv-db-log"
 			}
 		},
 		"variables": {
