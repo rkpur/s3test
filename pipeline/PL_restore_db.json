@@ -249,6 +249,10 @@
 						"linkedServiceName": {
 							"referenceName": "LS_AzureBlobStorage",
 							"type": "LinkedServiceReference"
+						},
+						"path": {
+							"value": "@pipeline().parameters.P_folder_del_log",
+							"type": "Expression"
 						}
 					},
 					"enableLogging": true,
