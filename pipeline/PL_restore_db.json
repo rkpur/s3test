@@ -136,6 +136,73 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "FE_files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_ADLS_Blob",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_container_name": {
+								"value": "@pipeline().parameters.P_adls_container_name",
+								"type": "Expression"
+							},
+							"P_folder": {
+								"value": "@pipeline().parameters.P_adls_folder",
+								"type": "Expression"
+							},
+							"P_file_name": "*.*"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_ADLS_Blob",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_container_name": "blob-s3",
+							"P_folder": "src",
+							"P_file_name": "*.*"
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
@@ -146,7 +213,10 @@
 			"P_adls_folder": {
 				"type": "string"
 			},
-			"P_adls_file_name": {
+			"P_adls_container_name_target": {
+				"type": "string"
+			},
+			"P_adls_folder_target": {
 				"type": "string"
 			}
 		},
