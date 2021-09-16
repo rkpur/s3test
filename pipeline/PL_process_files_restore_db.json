@@ -1,5 +1,5 @@
 {
-	"name": "PL_restore_db",
+	"name": "PL_process_files_restore_db",
 	"properties": {
 		"description": "restore the db with the most recent file",
 		"activities": [
