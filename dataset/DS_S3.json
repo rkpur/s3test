@@ -1,5 +1,5 @@
 {
-	"name": "DS_S3_File",
+	"name": "DS_S3",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AmazonS31",
