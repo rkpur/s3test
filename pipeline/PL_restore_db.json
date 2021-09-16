@@ -138,7 +138,7 @@
 				}
 			},
 			{
-				"name": "CP_blob_storage_files",
+				"name": "CP_files_archive",
 				"description": "copy all the files to the archive container and then delete",
 				"type": "Copy",
 				"dependsOn": [
@@ -211,11 +211,12 @@
 				]
 			},
 			{
-				"name": "Delete1",
+				"name": "DEL_files",
+				"description": "delete the files from the source container/folder",
 				"type": "Delete",
 				"dependsOn": [
 					{
-						"activity": "CP_blob_storage_files",
+						"activity": "CP_files_archive",
 						"dependencyConditions": [
 							"Succeeded"
 						]
