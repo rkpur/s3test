@@ -78,7 +78,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@or(empty(variables('V_max_file_date')), greaterOrEquals(int(variables('V_max_file_date')),\nint(variables('V_file_date'))\n))",
+									"value": "@or(empty(variables('V_max_file_date')), greaterOrEquals(\nint(variables('V_file_date')),int(variables('V_max_file_date'))\n))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
