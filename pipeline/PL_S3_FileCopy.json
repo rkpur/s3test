@@ -91,10 +91,6 @@
 			"P_s3_file_date": {
 				"type": "string",
 				"defaultValue": "2021-09-10"
-			},
-			"P_adls_file_name": {
-				"type": "string",
-				"defaultValue": "*.*"
 			}
 		},
 		"annotations": []
