@@ -1,0 +1,103 @@
+{
+	"name": "PL_restore_db",
+	"properties": {
+		"description": "restore the db with the most recent file",
+		"activities": [
+			{
+				"name": "GM_files",
+				"description": "get the list of files from the blob storage",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_ADLS_Blob",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_container_name": {
+								"value": "@pipeline().parameters.P_adls_container_name",
+								"type": "Expression"
+							},
+							"P_folder": {
+								"value": "@pipeline().parameters.P_adls_folder",
+								"type": "Expression"
+							},
+							"P_file_name": {
+								"value": "@pipeline().parameters.P_adls_file_name",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "FE_files",
+				"description": "loop through the files",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "GM_files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GM_files').output.childitem",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "IF_check_compare_file_date",
+							"description": "check and compare the file date and if the file date is the max, set the file name. extract the date value from filename to compare",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@or(empty(variables('V_max_file_date')), greaterOrEquals(int(variables('V_max_file_date')),\nint(substring(item().name,int(add(lastindexof(item().name,'.'),-9)),8)))\n)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "SV_max_file_name",
+										"description": "set the most recent file name",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "V_max_file_name",
+											"value": {
+												"value": "@item().name",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"annotations": []
+	}
+}
