@@ -69,11 +69,18 @@
 							"name": "IF_check_compare_file_date",
 							"description": "check and compare the file date and if the file date is the max, set the file name. extract the date value from filename to compare",
 							"type": "IfCondition",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "SV_file_date",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@or(empty(variables('V_max_file_date')), greaterOrEquals(int(variables('V_max_file_date')),\nint(substring(item().name,int(add(lastindexof(item().name,'.'),-9)),8)))\n)",
+									"value": "@or(empty(variables('V_max_file_date')), greaterOrEquals(int(variables('V_max_file_date')),\nint(variables('V_file_date'))\n))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
@@ -90,8 +97,43 @@
 												"type": "Expression"
 											}
 										}
+									},
+									{
+										"name": "SV_max_file_date",
+										"description": "set the most recent file date",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "SV_max_file_name",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "V_max_file_date",
+											"value": {
+												"value": "@item().name",
+												"type": "Expression"
+											}
+										}
 									}
 								]
+							}
+						},
+						{
+							"name": "SV_file_date",
+							"description": "capture the date of the current file from its name",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "V_file_date",
+								"value": {
+									"value": "@substring(item().name,int(add(lastindexof(item().name,'.'),-9)),8)",
+									"type": "Expression"
+								}
 							}
 						}
 					]
@@ -112,6 +154,12 @@
 		},
 		"variables": {
 			"V_max_file_name": {
+				"type": "String"
+			},
+			"V_max_file_date": {
+				"type": "String"
+			},
+			"V_file_date": {
 				"type": "String"
 			}
 		},
