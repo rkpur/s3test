@@ -138,7 +138,8 @@
 				}
 			},
 			{
-				"name": "Copy data1",
+				"name": "CP_blob_storage_files",
+				"description": "copy all the files to the archive container and then delete",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -214,7 +215,7 @@
 				"type": "Delete",
 				"dependsOn": [
 					{
-						"activity": "Copy data1",
+						"activity": "CP_blob_storage_files",
 						"dependencyConditions": [
 							"Succeeded"
 						]
