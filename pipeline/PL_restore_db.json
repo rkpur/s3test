@@ -129,7 +129,7 @@
 							"typeProperties": {
 								"variableName": "V_file_date",
 								"value": {
-									"value": "@substring(item().name,int(add(lastindexof(item().name,'.'),-9)),8)",
+									"value": "@substring(item().name,int(add(lastindexof(item().name,'.'),-8)),8)",
 									"type": "Expression"
 								}
 							}
