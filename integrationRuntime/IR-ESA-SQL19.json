@@ -1,0 +1,7 @@
+{
+	"name": "IR-ESA-SQL19",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "self hosted Integration runtime on the esa sql19"
+	}
+}
