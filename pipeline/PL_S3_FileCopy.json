@@ -24,10 +24,6 @@
 								"value": "@pipeline().parameters.P_s3_file_date",
 								"type": "Expression"
 							},
-							"modifiedDatetimeEnd": {
-								"value": "@pipeline().parameters.P_s3_file_date",
-								"type": "Expression"
-							},
 							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
