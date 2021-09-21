@@ -36,6 +36,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -281,7 +282,50 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[Util].[usp_Restore_DB]",
+					"storedProcedureParameters": {
+						"p_DBName": {
+							"value": "OrgExport_FVtoFV_Migration",
+							"type": "String"
+						},
+						"p_DBNameSource": {
+							"value": "FileVine",
+							"type": "String"
+						},
+						"p_directoryData": {
+							"value": "F:\\data",
+							"type": "String"
+						},
+						"p_directoryLog": {
+							"value": "F:\\log",
+							"type": "String"
+						},
+						"p_directoryStandBy": {
+							"value": "",
+							"type": "String"
+						},
+						"p_fileName": {
+							"value": {
+								"value": "@variables('V_max_file_name')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"p_fileURL": {
+							"value": {
+								"value": "@concat('https://stfilevinedev.blob.core.windows.net','/','fv-db-bak')",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQLServer_ESA19",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"parameters": {
