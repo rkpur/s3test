@@ -1,0 +1,9 @@
+{
+	"name": "DF-ESA-FV",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "93255c8c-c824-4bec-998f-7bff1e99189d",
+		"tenantId": "32a8b92e-a18e-43ad-88b3-5d5e34167be2"
+	}
+}
