@@ -1,0 +1,18 @@
+{
+	"name": "LS_SQLServer_ESA19",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Linked service for ESA19 on-prem sql server db,",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=True;data source=esa-a-sql19;initial catalog=FileVine",
+			"userName": "EdgarSnyder\\ESADW",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiNTM2ZDIwYi1iZjgyLTRjMmUtOTY3Ny02ZjY4MTMzOTRlOTQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "IR-VM-ESA-A-SQL19",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
