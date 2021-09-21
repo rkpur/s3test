@@ -287,11 +287,11 @@
 					"storedProcedureName": "[Util].[usp_Restore_DB]",
 					"storedProcedureParameters": {
 						"p_DBName": {
-							"value": "OrgExport_FVtoFV_Migration",
+							"value": "FileVine",
 							"type": "String"
 						},
 						"p_DBNameSource": {
-							"value": "FileVine",
+							"value": "OrgExport_FVtoFV_Migration",
 							"type": "String"
 						},
 						"p_directoryData": {
