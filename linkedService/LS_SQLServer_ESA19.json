@@ -6,9 +6,9 @@
 		"annotations": [],
 		"type": "SqlServer",
 		"typeProperties": {
-			"connectionString": "integrated security=True;data source=esa-a-sql19;initial catalog=Datawarehouse_Dev",
+			"connectionString": "integrated security=True;data source=esa-a-sql19;initial catalog=master",
 			"userName": "EdgarSnyder\\ESADW",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI4OTkwMmYwMy0xYTMwLTQyMWUtYTkxYS02OGY2MWZjYmIyMjEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiNTA2MzI0OC0yNGE2LTQ1Y2QtOTM0NS05OWQ3NWIxNDc2YzciLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "IR-VM-ESA-A-SQL19",
