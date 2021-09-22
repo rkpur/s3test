@@ -144,7 +144,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Stored procedure1",
+						"activity": "SP_restore_db",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -265,7 +265,8 @@
 				}
 			},
 			{
-				"name": "Stored procedure1",
+				"name": "SP_restore_db",
+				"description": "calls stored procedure to restore the db",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
