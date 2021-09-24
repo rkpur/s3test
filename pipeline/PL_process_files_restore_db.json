@@ -349,7 +349,7 @@
 				"type": "Delete",
 				"dependsOn": [
 					{
-						"activity": "DEL_files",
+						"activity": "Set variable1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -393,10 +393,30 @@
 						"type": "AzureBlobStorageReadSettings",
 						"recursive": false,
 						"modifiedDatetimeStart": {
-							"value": "@getPastTime(pipeline().parameters.P_days_in_archive,'Day')",
+							"value": "@getPastTime(90,'Day')",
 							"type": "Expression"
 						},
 						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "DEL_files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_old_file_date",
+					"value": {
+						"value": "@getPastTime(pipeline().parameters.P_days_in_archive,'Day')",
+						"type": "Expression"
 					}
 				}
 			}
@@ -432,6 +452,9 @@
 				"type": "String"
 			},
 			"V_file_date": {
+				"type": "String"
+			},
+			"v_old_file_date": {
 				"type": "String"
 			}
 		},
