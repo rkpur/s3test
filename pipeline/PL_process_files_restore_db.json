@@ -212,7 +212,7 @@
 				]
 			},
 			{
-				"name": "DEL_files",
+				"name": "DEL_source_files",
 				"description": "delete the files from the source container/folder",
 				"type": "Delete",
 				"dependsOn": [
@@ -349,7 +349,7 @@
 				"type": "Delete",
 				"dependsOn": [
 					{
-						"activity": "DEL_files",
+						"activity": "DEL_source_files",
 						"dependencyConditions": [
 							"Succeeded"
 						]
