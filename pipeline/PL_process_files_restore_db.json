@@ -441,7 +441,8 @@
 				"defaultValue": "fv-del-log"
 			},
 			"P_days_in_archive": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 30
 			}
 		},
 		"variables": {
