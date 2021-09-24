@@ -349,7 +349,7 @@
 				"type": "Delete",
 				"dependsOn": [
 					{
-						"activity": "Set variable1",
+						"activity": "DEL_files",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -397,26 +397,6 @@
 							"type": "Expression"
 						},
 						"enablePartitionDiscovery": false
-					}
-				}
-			},
-			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "DEL_files",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "v_old_file_date",
-					"value": {
-						"value": "@getPastTime(pipeline().parameters.P_days_in_archive,'Day')",
-						"type": "Expression"
 					}
 				}
 			}
