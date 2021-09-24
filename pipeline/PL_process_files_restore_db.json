@@ -144,7 +144,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "SP_restore_db",
+						"activity": "IF_file_not_found",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -265,12 +265,91 @@
 				}
 			},
 			{
-				"name": "SP_restore_db",
-				"description": "calls stored procedure to restore the db",
-				"type": "SqlServerStoredProcedure",
+				"name": "IF_file_not_found",
+				"description": "if a file is available use it to restore the db",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
 						"activity": "FE_files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@empty(variables('V_max_file_name'))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "SP_restore_db",
+							"description": "calls stored procedure to restore the db",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[Util].[usp_Restore_DB]",
+								"storedProcedureParameters": {
+									"p_DBName": {
+										"value": "FileVine",
+										"type": "String"
+									},
+									"p_DBNameSource": {
+										"value": "OrgExport_FVtoFV_Migration",
+										"type": "String"
+									},
+									"p_directoryData": {
+										"value": "F:\\data",
+										"type": "String"
+									},
+									"p_directoryLog": {
+										"value": "F:\\log",
+										"type": "String"
+									},
+									"p_directoryStandBy": {
+										"value": "",
+										"type": "String"
+									},
+									"p_fileName": {
+										"value": {
+											"value": "@variables('V_max_file_name')",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"p_fileURL": {
+										"value": {
+											"value": "@concat('https://stfilevinedev.blob.core.windows.net','/','fv-db-bak')",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_SQLServer_ESA19",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "DEL_files_archive",
+				"description": "delete the files from the archive container/folder",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "DEL_files",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -285,47 +364,40 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[Util].[usp_Restore_DB]",
-					"storedProcedureParameters": {
-						"p_DBName": {
-							"value": "FileVine",
-							"type": "String"
-						},
-						"p_DBNameSource": {
-							"value": "OrgExport_FVtoFV_Migration",
-							"type": "String"
-						},
-						"p_directoryData": {
-							"value": "F:\\data",
-							"type": "String"
-						},
-						"p_directoryLog": {
-							"value": "F:\\log",
-							"type": "String"
-						},
-						"p_directoryStandBy": {
-							"value": "",
-							"type": "String"
-						},
-						"p_fileName": {
-							"value": {
-								"value": "@variables('V_max_file_name')",
+					"dataset": {
+						"referenceName": "DS_ADLS_Blob",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_container_name": {
+								"value": "@pipeline().parameters.P_adls_container_name_target",
 								"type": "Expression"
 							},
-							"type": "String"
-						},
-						"p_fileURL": {
-							"value": {
-								"value": "@concat('https://stfilevinedev.blob.core.windows.net','/','fv-db-bak')",
+							"P_folder": {
+								"value": "@pipeline().parameters.P_adls_folder_target",
 								"type": "Expression"
-							},
-							"type": "String"
+							}
 						}
+					},
+					"logStorageSettings": {
+						"linkedServiceName": {
+							"referenceName": "LS_AzureBlobStorage",
+							"type": "LinkedServiceReference"
+						},
+						"path": {
+							"value": "@pipeline().parameters.P_folder_del_log",
+							"type": "Expression"
+						}
+					},
+					"enableLogging": true,
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": false,
+						"modifiedDatetimeStart": {
+							"value": "@getPastTime(pipeline().parameters.P_days_in_archive,'Day')",
+							"type": "Expression"
+						},
+						"enablePartitionDiscovery": false
 					}
-				},
-				"linkedServiceName": {
-					"referenceName": "LS_SQLServer_ESA19",
-					"type": "LinkedServiceReference"
 				}
 			}
 		],
