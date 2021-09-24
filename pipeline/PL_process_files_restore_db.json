@@ -393,7 +393,7 @@
 						"type": "AzureBlobStorageReadSettings",
 						"recursive": false,
 						"modifiedDatetimeEnd": {
-							"value": "@getPastTime(90,'Day')",
+							"value": "@getPastTime(pipeline().parameters.P_days_in_archive,'Day')",
 							"type": "Expression"
 						},
 						"enablePartitionDiscovery": false
