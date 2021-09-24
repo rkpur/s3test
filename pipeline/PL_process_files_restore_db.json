@@ -347,6 +347,9 @@
 			"P_folder_del_log": {
 				"type": "string",
 				"defaultValue": "fv-del-log"
+			},
+			"P_days_in_archive": {
+				"type": "int"
 			}
 		},
 		"variables": {
