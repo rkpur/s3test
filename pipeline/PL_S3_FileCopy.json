@@ -142,7 +142,10 @@
 							"value": "@pipeline().parameters.P_email_to",
 							"type": "Expression"
 						},
-						"P_DataFactoryName": "@pipeline().DataFactory",
+						"P_DataFactoryName": {
+							"value": "@pipeline().DataFactory",
+							"type": "Expression"
+						},
 						"P_Message": {
 							"value": "@concat('Pipeline: ', pipeline().Pipeline,' with RunId: ', pipeline().RunId, ' has succeeded. Please refer to the Trigger Id:',pipeline().TriggerId,' in the ADF dashboard for additional details')",
 							"type": "Expression"
@@ -151,7 +154,10 @@
 							"value": "@concat(pipeline().Pipeline,': Success')",
 							"type": "Expression"
 						},
-						"P_PipelineName": "@pipeline().Pipeline"
+						"P_PipelineName": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						}
 					}
 				}
 			},
@@ -179,7 +185,10 @@
 							"value": "@pipeline().parameters.P_email_to",
 							"type": "Expression"
 						},
-						"P_DataFactoryName": "@pipeline().DataFactory",
+						"P_DataFactoryName": {
+							"value": "@pipeline().DataFactory",
+							"type": "Expression"
+						},
 						"P_Message": {
 							"value": "@concat('Pipeline: ', pipeline().Pipeline,' with RunId: ', pipeline().RunId, ' has failed. Please refer to the Trigger Id: ',pipeline().TriggerId,' in the ADF dashboard for additional details')",
 							"type": "Expression"
@@ -188,7 +197,10 @@
 							"value": "@concat(pipeline().Pipeline,': Failed')",
 							"type": "Expression"
 						},
-						"P_PipelineName": "@pipeline().Pipeline"
+						"P_PipelineName": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						}
 					}
 				}
 			}
@@ -208,6 +220,10 @@
 			},
 			"P_adls_folder": {
 				"type": "string"
+			},
+			"p_adls_container_URL": {
+				"type": "string",
+				"defaultValue": "https://stfilevinedev.blob.core.windows.net"
 			},
 			"P_s3_file_date": {
 				"type": "string",
@@ -231,6 +247,25 @@
 			"P_email_to": {
 				"type": "string",
 				"defaultValue": "rpurushothaman@3cloudsolutions.com"
+			},
+			"p_DBName": {
+				"type": "string",
+				"defaultValue": "FileVine"
+			},
+			"p_DBNameSource": {
+				"type": "string",
+				"defaultValue": "OrgExport_FVtoFV_Migration"
+			},
+			"p_directoryData": {
+				"type": "string",
+				"defaultValue": "F:\\data"
+			},
+			"p_directoryLog": {
+				"type": "string",
+				"defaultValue": "F:\\log"
+			},
+			"p_directoryStandBy": {
+				"type": "string"
 			}
 		},
 		"annotations": []
