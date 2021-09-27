@@ -142,9 +142,12 @@
 							"value": "@pipeline().parameters.P_email_to",
 							"type": "Expression"
 						},
-						"P_DataFactoryName": "DF-ESA-FV",
-						"P_Subject": "FV_db_restore: SUCCESS",
-						"P_PipelineName": "PL_S3_FileCopy"
+						"P_DataFactoryName": "@pipeline().DataFactory",
+						"P_Subject": {
+							"value": "@concat(pipeline().Pipeline,': Success')",
+							"type": "Expression"
+						},
+						"P_PipelineName": "@pipeline().Pipeline"
 					}
 				}
 			},
@@ -172,9 +175,12 @@
 							"value": "@pipeline().parameters.P_email_to",
 							"type": "Expression"
 						},
-						"P_DataFactoryName": "DF-ESA-FV",
-						"P_Subject": "FV_db_restore: FAILED",
-						"P_PipelineName": "PL_S3_FileCopy"
+						"P_DataFactoryName": "@pipeline().DataFactory",
+						"P_Subject": {
+							"value": "@concat(pipeline().Pipeline,': Failed')",
+							"type": "Expression"
+						},
+						"P_PipelineName": "@pipeline().Pipeline"
 					}
 				}
 			}
