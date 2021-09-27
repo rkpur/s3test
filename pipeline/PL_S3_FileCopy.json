@@ -229,7 +229,8 @@
 				"defaultValue": 30
 			},
 			"P_email_to": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "rpurushothaman@3cloudsolutions.com"
 			}
 		},
 		"annotations": []
