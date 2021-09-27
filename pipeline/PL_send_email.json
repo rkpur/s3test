@@ -1,0 +1,7 @@
+{
+	"name": "PL_send_email",
+	"properties": {
+		"description": "pipe line would call the logic app to send the email about status of a pipeline execution status",
+		"annotations": []
+	}
+}
