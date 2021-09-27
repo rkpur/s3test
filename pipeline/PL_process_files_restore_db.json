@@ -300,19 +300,31 @@
 								"storedProcedureName": "[Util].[usp_Restore_DB]",
 								"storedProcedureParameters": {
 									"p_DBName": {
-										"value": "FileVine",
+										"value": {
+											"value": "@pipeline().parameters.p_DBName",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"p_DBNameSource": {
-										"value": "OrgExport_FVtoFV_Migration",
+										"value": {
+											"value": "@pipeline().parameters.p_DBNameSource",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"p_directoryData": {
-										"value": "F:\\data",
+										"value": {
+											"value": "@pipeline().parameters.p_directoryData",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"p_directoryLog": {
-										"value": "F:\\log",
+										"value": {
+											"value": "@pipeline().parameters.p_directoryLog",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"p_directoryStandBy": {
@@ -328,7 +340,7 @@
 									},
 									"p_fileURL": {
 										"value": {
-											"value": "@concat('https://stfilevinedev.blob.core.windows.net','/','fv-db-bak')",
+											"value": "@concat(pipeline().parameters.P_adls_container_name,'/',pipeline().parameters.P_adls_container_name, if(empty(pipeline().parameters.P_adls_folder),'',concat('/',pipeline().parameters.P_adls_folder)))",
 											"type": "Expression"
 										},
 										"type": "String"
@@ -361,43 +373,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": "dbo.sp_Filevine_dB_User_Mapping",
-								"storedProcedureParameters": {
-									"p_DBName": {
-										"value": "FileVine",
-										"type": "String"
-									},
-									"p_DBNameSource": {
-										"value": "OrgExport_FVtoFV_Migration",
-										"type": "String"
-									},
-									"p_directoryData": {
-										"value": "F:\\data",
-										"type": "String"
-									},
-									"p_directoryLog": {
-										"value": "F:\\log",
-										"type": "String"
-									},
-									"p_directoryStandBy": {
-										"value": "",
-										"type": "String"
-									},
-									"p_fileName": {
-										"value": {
-											"value": "@variables('V_max_file_name')",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
-									"p_fileURL": {
-										"value": {
-											"value": "@concat('https://stfilevinedev.blob.core.windows.net','/','fv-db-bak')",
-											"type": "Expression"
-										},
-										"type": "String"
-									}
-								}
+								"storedProcedureName": "dbo.sp_Filevine_dB_User_Mapping"
 							},
 							"linkedServiceName": {
 								"referenceName": "LS_SQLServer_ESA19",
@@ -487,6 +463,26 @@
 			"P_days_in_archive": {
 				"type": "int",
 				"defaultValue": 30
+			},
+			"p_DBName": {
+				"type": "string",
+				"defaultValue": "FileVine"
+			},
+			"p_DBNameSource": {
+				"type": "string",
+				"defaultValue": "OrgExport_FVtoFV_Migration"
+			},
+			"p_directoryData": {
+				"type": "string",
+				"defaultValue": "F:\\data"
+			},
+			"p_directoryLog": {
+				"type": "string",
+				"defaultValue": "F:\\log"
+			},
+			"p_adls_container_URL": {
+				"type": "string",
+				"defaultValue": "https://stfilevinedev.blob.core.windows.net"
 			}
 		},
 		"variables": {
