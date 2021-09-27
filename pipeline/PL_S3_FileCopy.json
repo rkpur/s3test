@@ -143,6 +143,10 @@
 							"type": "Expression"
 						},
 						"P_DataFactoryName": "@pipeline().DataFactory",
+						"P_Message": {
+							"value": "@concat('Pipeline: ', pipeline().Pipeline,' with RunId: ', pipeline().RunId, ' has succeeded. Please refer to the Trigger Id:',pipeline().TriggerId,' in the ADF dashboard for additional details')",
+							"type": "Expression"
+						},
 						"P_Subject": {
 							"value": "@concat(pipeline().Pipeline,': Success')",
 							"type": "Expression"
@@ -176,6 +180,10 @@
 							"type": "Expression"
 						},
 						"P_DataFactoryName": "@pipeline().DataFactory",
+						"P_Message": {
+							"value": "@concat('Pipeline: ', pipeline().Pipeline,' with RunId: ', pipeline().RunId, ' has failed. Please refer to the Trigger Id: ',pipeline().TriggerId,' in the ADF dashboard for additional details')",
+							"type": "Expression"
+						},
 						"P_Subject": {
 							"value": "@concat(pipeline().Pipeline,': Failed')",
 							"type": "Expression"
