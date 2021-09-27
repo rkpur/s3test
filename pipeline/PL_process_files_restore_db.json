@@ -252,7 +252,7 @@
 							"type": "LinkedServiceReference"
 						},
 						"path": {
-							"value": "@pipeline().parameters.P_folder_del_log",
+							"value": "@pipeline().parameters.P_container_del_log",
 							"type": "Expression"
 						}
 					},
@@ -427,7 +427,7 @@
 							"type": "LinkedServiceReference"
 						},
 						"path": {
-							"value": "@pipeline().parameters.P_folder_del_log",
+							"value": "@pipeline().parameters.P_container_del_log",
 							"type": "Expression"
 						}
 					},
@@ -459,7 +459,7 @@
 			"P_adls_folder_archive": {
 				"type": "string"
 			},
-			"P_folder_del_log": {
+			"P_container_del_log": {
 				"type": "string",
 				"defaultValue": "fv-del-log"
 			},
