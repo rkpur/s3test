@@ -339,6 +339,63 @@
 								"referenceName": "LS_SQLServer_ESA19",
 								"type": "LinkedServiceReference"
 							}
+						},
+						{
+							"name": "SP_Filevine_dB_User_Mapping",
+							"description": "grant access to Filevine db for different users",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "dbo.sp_Filevine_dB_User_Mapping",
+								"storedProcedureParameters": {
+									"p_DBName": {
+										"value": "FileVine",
+										"type": "String"
+									},
+									"p_DBNameSource": {
+										"value": "OrgExport_FVtoFV_Migration",
+										"type": "String"
+									},
+									"p_directoryData": {
+										"value": "F:\\data",
+										"type": "String"
+									},
+									"p_directoryLog": {
+										"value": "F:\\log",
+										"type": "String"
+									},
+									"p_directoryStandBy": {
+										"value": "",
+										"type": "String"
+									},
+									"p_fileName": {
+										"value": {
+											"value": "@variables('V_max_file_name')",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"p_fileURL": {
+										"value": {
+											"value": "@concat('https://stfilevinedev.blob.core.windows.net','/','fv-db-bak')",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_SQLServer_ESA19",
+								"type": "LinkedServiceReference"
+							}
 						}
 					]
 				}
