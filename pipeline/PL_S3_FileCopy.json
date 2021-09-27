@@ -70,6 +70,27 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "EP_process_files",
+				"description": "Call the pipeline to process files and restore the filevine db",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CD_S3_to_ADLS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_process_files_restore_db",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"parameters": {
