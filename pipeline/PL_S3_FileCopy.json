@@ -141,7 +141,10 @@
 						"P_EmailTo": {
 							"value": "@pipeline().parameters.P_email_to",
 							"type": "Expression"
-						}
+						},
+						"P_DataFactoryName": "DF-ESA-FV",
+						"P_Subject": "FV_db_restore: SUCCESS",
+						"P_PipelineName": "PL_S3_FileCopy"
 					}
 				}
 			},
@@ -168,7 +171,10 @@
 						"P_EmailTo": {
 							"value": "@pipeline().parameters.P_email_to",
 							"type": "Expression"
-						}
+						},
+						"P_DataFactoryName": "DF-ESA-FV",
+						"P_Subject": "FV_db_restore: FAILED",
+						"P_PipelineName": "PL_S3_FileCopy"
 					}
 				}
 			}
