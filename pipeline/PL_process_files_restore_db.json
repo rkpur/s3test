@@ -344,7 +344,14 @@
 							"name": "SP_Filevine_dB_User_Mapping",
 							"description": "grant access to Filevine db for different users",
 							"type": "SqlServerStoredProcedure",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "SP_restore_db",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
