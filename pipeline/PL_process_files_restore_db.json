@@ -200,11 +200,11 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"P_container_name": {
-								"value": "@pipeline().parameters.P_adls_container_name_target",
+								"value": "@pipeline().parameters.P_adls_container_name_archive",
 								"type": "Expression"
 							},
 							"P_folder": {
-								"value": "@pipeline().parameters.P_adls_folder_target",
+								"value": "@pipeline().parameters.P_adls_folder_archive",
 								"type": "Expression"
 							}
 						}
@@ -343,7 +343,7 @@
 									},
 									"p_fileURL": {
 										"value": {
-											"value": "@concat(pipeline().parameters.P_adls_container_name,'/',pipeline().parameters.P_adls_container_name, if(empty(pipeline().parameters.P_adls_folder),'',concat('/',pipeline().parameters.P_adls_folder)))",
+											"value": "@concat(pipeline().parameters.p_adls_container_URL,'/',pipeline().parameters.P_adls_container_name, if(empty(pipeline().parameters.P_adls_folder),'',concat('/',pipeline().parameters.P_adls_folder)))",
 											"type": "Expression"
 										},
 										"type": "String"
@@ -412,11 +412,11 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"P_container_name": {
-								"value": "@pipeline().parameters.P_adls_container_name_target",
+								"value": "@pipeline().parameters.P_adls_container_name_archive",
 								"type": "Expression"
 							},
 							"P_folder": {
-								"value": "@pipeline().parameters.P_adls_folder_target",
+								"value": "@pipeline().parameters.P_adls_folder_archive",
 								"type": "Expression"
 							}
 						}
