@@ -136,7 +136,13 @@
 						"referenceName": "PL_send_email",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_EmailTo": {
+							"value": "@pipeline().parameters.P_email_to",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -157,7 +163,13 @@
 						"referenceName": "PL_send_email",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_EmailTo": {
+							"value": "@pipeline().parameters.P_email_to",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
@@ -195,6 +207,9 @@
 			"P_days_in_archive": {
 				"type": "int",
 				"defaultValue": 30
+			},
+			"P_email_to": {
+				"type": "string"
 			}
 		},
 		"annotations": []
