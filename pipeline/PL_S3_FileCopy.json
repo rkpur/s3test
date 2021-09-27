@@ -89,7 +89,17 @@
 						"referenceName": "PL_process_files_restore_db",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"P_adls_container_name": {
+							"value": "@pipeline().parameters.P_adls_container_name",
+							"type": "Expression"
+						},
+						"P_adls_folder": {
+							"value": "@pipeline().parameters.P_adls_folder",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
@@ -112,6 +122,21 @@
 			"P_s3_file_date": {
 				"type": "string",
 				"defaultValue": "2021-09-10"
+			},
+			"P_adls_container_name_archive": {
+				"type": "string",
+				"defaultValue": "fv-db-bak-archive"
+			},
+			"P_adls_folder_archive": {
+				"type": "string"
+			},
+			"P_folder_del_log": {
+				"type": "string",
+				"defaultValue": "fv-del-log"
+			},
+			"P_days_in_archive": {
+				"type": "int",
+				"defaultValue": 30
 			}
 		},
 		"annotations": []
