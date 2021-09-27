@@ -114,6 +114,30 @@
 						"P_days_in_archive": {
 							"value": "@pipeline().parameters.P_days_in_archive",
 							"type": "Expression"
+						},
+						"p_DBName": {
+							"value": "@pipeline().parameters.p_DBName",
+							"type": "Expression"
+						},
+						"p_DBNameSource": {
+							"value": "@pipeline().parameters.p_DBNameSource",
+							"type": "Expression"
+						},
+						"p_directoryData": {
+							"value": "@pipeline().parameters.p_directoryData",
+							"type": "Expression"
+						},
+						"p_directoryLog": {
+							"value": "@pipeline().parameters.p_directoryLog",
+							"type": "Expression"
+						},
+						"p_adls_container_URL": {
+							"value": "@pipeline().parameters.p_adls_container_URL",
+							"type": "Expression"
+						},
+						"p_directoryStandBy": {
+							"value": "@pipeline().parameters.p_directoryStandBy",
+							"type": "Expression"
 						}
 					}
 				}
