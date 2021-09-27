@@ -328,7 +328,10 @@
 										"type": "String"
 									},
 									"p_directoryStandBy": {
-										"value": "",
+										"value": {
+											"value": "@pipeline().parameters.p_directoryStandBy",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"p_fileName": {
@@ -483,6 +486,9 @@
 			"p_adls_container_URL": {
 				"type": "string",
 				"defaultValue": "https://stfilevinedev.blob.core.windows.net"
+			},
+			"p_directoryStandBy": {
+				"type": "string"
 			}
 		},
 		"variables": {
