@@ -117,6 +117,48 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "EP_send_email_success",
+				"description": "Call the pipeline to send the success email",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_process_files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_send_email",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_send_email_failure",
+				"description": "Call the pipeline to send the failure email",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_process_files",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_send_email",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"parameters": {
