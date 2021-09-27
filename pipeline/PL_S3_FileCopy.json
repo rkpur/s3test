@@ -98,6 +98,22 @@
 						"P_adls_folder": {
 							"value": "@pipeline().parameters.P_adls_folder",
 							"type": "Expression"
+						},
+						"P_adls_container_name_archive": {
+							"value": "@pipeline().parameters.P_adls_container_name_archive",
+							"type": "Expression"
+						},
+						"P_adls_folder_archive": {
+							"value": "@pipeline().parameters.P_adls_folder_archive",
+							"type": "Expression"
+						},
+						"P_folder_del_log": {
+							"value": "@pipeline().parameters.P_folder_del_log",
+							"type": "Expression"
+						},
+						"P_days_in_archive": {
+							"value": "@pipeline().parameters.P_days_in_archive",
+							"type": "Expression"
 						}
 					}
 				}
