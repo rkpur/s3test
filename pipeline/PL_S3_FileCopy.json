@@ -270,7 +270,7 @@
 			},
 			"P_email_to": {
 				"type": "string",
-				"defaultValue": "rpurushothaman@3cloudsolutions.com"
+				"defaultValue": "filevine_alerts@edgarsnyder.com"
 			},
 			"p_DBName": {
 				"type": "string",
