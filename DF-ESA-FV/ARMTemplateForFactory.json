@@ -1,0 +1,1076 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DF-ESA-FV"
+		},
+		"LS_AmazonS31_secretAccessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'secretAccessKey' of 'LS_AmazonS31'"
+		},
+		"LS_AzureBlobStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_AzureBlobStorage'"
+		},
+		"LS_SQLServer_ESA19_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_SQLServer_ESA19'"
+		},
+		"LS_SQLServer_ESA19_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LS_SQLServer_ESA19'"
+		},
+		"LS_AmazonS31_properties_typeProperties_accessKeyId": {
+			"type": "string",
+			"defaultValue": "AKIAT6D6FEVNPEDE7B3H"
+		},
+		"LS_SQLServer_ESA19_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "EdgarSnyder\\ESADW"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_S3_FileCopy')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CD_S3_to_ADLS",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AmazonS3ReadSettings",
+									"recursive": false,
+									"modifiedDatetimeStart": {
+										"value": "@pipeline().parameters.P_s3_file_date",
+										"type": "Expression"
+									},
+									"deleteFilesAfterCompletion": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_S3",
+								"type": "DatasetReference",
+								"parameters": {
+									"P_bucket": {
+										"value": "@pipeline().parameters.P_s3_bucket_name",
+										"type": "Expression"
+									},
+									"P_folder": {
+										"value": "@pipeline().parameters.P_s3_folder",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ADLS_Blob",
+								"type": "DatasetReference",
+								"parameters": {
+									"P_container_name": {
+										"value": "@pipeline().parameters.P_adls_container_name",
+										"type": "Expression"
+									},
+									"P_folder": {
+										"value": "@pipeline().parameters.P_adls_folder",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "EP_process_files",
+						"description": "Call the pipeline to process files and restore the filevine db",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "CD_S3_to_ADLS",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PL_process_files_restore_db",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_adls_container_name": {
+									"value": "@pipeline().parameters.P_adls_container_name",
+									"type": "Expression"
+								},
+								"P_adls_folder": {
+									"value": "@pipeline().parameters.P_adls_folder",
+									"type": "Expression"
+								},
+								"P_adls_container_name_archive": {
+									"value": "@pipeline().parameters.P_adls_container_name_archive",
+									"type": "Expression"
+								},
+								"P_adls_folder_archive": {
+									"value": "@pipeline().parameters.P_adls_folder_archive",
+									"type": "Expression"
+								},
+								"P_container_del_log": {
+									"value": "@pipeline().parameters.P_container_del_log",
+									"type": "Expression"
+								},
+								"P_days_in_archive": {
+									"value": "@pipeline().parameters.P_days_in_archive",
+									"type": "Expression"
+								},
+								"p_DBName": {
+									"value": "@pipeline().parameters.p_DBName",
+									"type": "Expression"
+								},
+								"p_DBNameSource": {
+									"value": "@pipeline().parameters.p_DBNameSource",
+									"type": "Expression"
+								},
+								"p_directoryData": {
+									"value": "@pipeline().parameters.p_directoryData",
+									"type": "Expression"
+								},
+								"p_directoryLog": {
+									"value": "@pipeline().parameters.p_directoryLog",
+									"type": "Expression"
+								},
+								"p_adls_container_URL": {
+									"value": "@pipeline().parameters.p_adls_container_URL",
+									"type": "Expression"
+								},
+								"p_directoryStandBy": {
+									"value": "@pipeline().parameters.p_directoryStandBy",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "EP_send_email_success",
+						"description": "Call the pipeline to send the success email",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EP_process_files",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PL_send_email",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_EmailTo": {
+									"value": "@pipeline().parameters.P_email_to",
+									"type": "Expression"
+								},
+								"P_DataFactoryName": {
+									"value": "@pipeline().DataFactory",
+									"type": "Expression"
+								},
+								"P_Message": {
+									"value": "@concat('Pipeline: ', pipeline().Pipeline,' with RunId: ', pipeline().RunId, ' has succeeded. Please refer to the Trigger Id:',pipeline().TriggerId,' in the ADF dashboard for additional details')",
+									"type": "Expression"
+								},
+								"P_Subject": {
+									"value": "@concat(pipeline().Pipeline,': Success')",
+									"type": "Expression"
+								},
+								"P_PipelineName": {
+									"value": "@pipeline().Pipeline",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "EP_send_email_failure",
+						"description": "Call the pipeline to send the failure email",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "EP_process_files",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "PL_send_email",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"P_EmailTo": {
+									"value": "@pipeline().parameters.P_email_to",
+									"type": "Expression"
+								},
+								"P_DataFactoryName": {
+									"value": "@pipeline().DataFactory",
+									"type": "Expression"
+								},
+								"P_Message": {
+									"value": "@concat('Pipeline: ', pipeline().Pipeline,' with RunId: ', pipeline().RunId, ' has failed. Please refer to the Trigger Id: ',pipeline().TriggerId,' in the ADF dashboard for additional details')",
+									"type": "Expression"
+								},
+								"P_Subject": {
+									"value": "@concat(pipeline().Pipeline,': Failed')",
+									"type": "Expression"
+								},
+								"P_PipelineName": {
+									"value": "@pipeline().Pipeline",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"P_s3_bucket_name": {
+						"type": "string",
+						"defaultValue": "export-filevine-5"
+					},
+					"P_s3_folder": {
+						"type": "string",
+						"defaultValue": "database"
+					},
+					"P_adls_container_name": {
+						"type": "string",
+						"defaultValue": "fv-db-bak"
+					},
+					"P_adls_folder": {
+						"type": "string"
+					},
+					"p_adls_container_URL": {
+						"type": "string",
+						"defaultValue": "https://stfilevinedev.blob.core.windows.net"
+					},
+					"P_s3_file_date": {
+						"type": "string",
+						"defaultValue": "2021-09-10"
+					},
+					"P_adls_container_name_archive": {
+						"type": "string",
+						"defaultValue": "fv-db-bak-archive"
+					},
+					"P_adls_folder_archive": {
+						"type": "string"
+					},
+					"P_container_del_log": {
+						"type": "string",
+						"defaultValue": "fv-del-log"
+					},
+					"P_days_in_archive": {
+						"type": "int",
+						"defaultValue": 30
+					},
+					"P_email_to": {
+						"type": "string",
+						"defaultValue": "filevine_alerts@edgarsnyder.com"
+					},
+					"p_DBName": {
+						"type": "string",
+						"defaultValue": "FileVine"
+					},
+					"p_DBNameSource": {
+						"type": "string",
+						"defaultValue": "OrgExport_FVtoFV_Migration"
+					},
+					"p_directoryData": {
+						"type": "string",
+						"defaultValue": "F:\\data"
+					},
+					"p_directoryLog": {
+						"type": "string",
+						"defaultValue": "F:\\log"
+					},
+					"p_directoryStandBy": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_S3')]",
+				"[concat(variables('factoryId'), '/datasets/DS_ADLS_Blob')]",
+				"[concat(variables('factoryId'), '/pipelines/PL_process_files_restore_db')]",
+				"[concat(variables('factoryId'), '/pipelines/PL_send_email')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_process_files_restore_db')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "restore the db with the most recent file",
+				"activities": [
+					{
+						"name": "GM_files",
+						"description": "get the list of files from the blob storage",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_Blob",
+								"type": "DatasetReference",
+								"parameters": {
+									"P_container_name": {
+										"value": "@pipeline().parameters.P_adls_container_name",
+										"type": "Expression"
+									},
+									"P_folder": {
+										"value": "@pipeline().parameters.P_adls_folder",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "FE_files",
+						"description": "loop through the files",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GM_files",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GM_files').output.childitems",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "IF_check_compare_file_date",
+									"description": "check and compare the file date and if the file date is the max, set the file name. extract the date value from filename to compare",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "SV_file_date",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@or(empty(variables('V_max_file_date')), greaterOrEquals(\nint(variables('V_file_date')),int(variables('V_max_file_date'))\n))",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "SV_max_file_name",
+												"description": "set the most recent file name",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "V_max_file_name",
+													"value": {
+														"value": "@item().name",
+														"type": "Expression"
+													}
+												}
+											},
+											{
+												"name": "SV_max_file_date",
+												"description": "set the most recent file date",
+												"type": "SetVariable",
+												"dependsOn": [
+													{
+														"activity": "SV_max_file_name",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "V_max_file_date",
+													"value": {
+														"value": "@variables('V_file_date')",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "SV_file_date",
+									"description": "capture the date of the current file from its name",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "V_file_date",
+										"value": {
+											"value": "@substring(item().name,int(add(lastindexof(item().name,'.'),-8)),8)",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "CP_files_archive",
+						"description": "copy all the files to the archive container and then delete",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "IF_file_not_found",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": false,
+									"deleteFilesAfterCompletion": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_ADLS_Blob",
+								"type": "DatasetReference",
+								"parameters": {
+									"P_container_name": {
+										"value": "@pipeline().parameters.P_adls_container_name",
+										"type": "Expression"
+									},
+									"P_folder": {
+										"value": "@pipeline().parameters.P_adls_folder",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ADLS_Blob",
+								"type": "DatasetReference",
+								"parameters": {
+									"P_container_name": {
+										"value": "@pipeline().parameters.P_adls_container_name_archive",
+										"type": "Expression"
+									},
+									"P_folder": {
+										"value": "@pipeline().parameters.P_adls_folder_archive",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "DEL_files_source",
+						"description": "delete the files from the source container/folder",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "CP_files_archive",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_Blob",
+								"type": "DatasetReference",
+								"parameters": {
+									"P_container_name": {
+										"value": "@pipeline().parameters.P_adls_container_name",
+										"type": "Expression"
+									},
+									"P_folder": {
+										"value": "@pipeline().parameters.P_adls_folder",
+										"type": "Expression"
+									}
+								}
+							},
+							"logStorageSettings": {
+								"linkedServiceName": {
+									"referenceName": "LS_AzureBlobStorage",
+									"type": "LinkedServiceReference"
+								},
+								"path": {
+									"value": "@pipeline().parameters.P_container_del_log",
+									"type": "Expression"
+								}
+							},
+							"enableLogging": true,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": false,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "IF_file_not_found",
+						"description": "if a file is available use it to restore the db",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "FE_files",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@empty(variables('V_max_file_name'))",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "SP_restore_db",
+									"description": "calls stored procedure to restore the db",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[Util].[usp_Restore_DB]",
+										"storedProcedureParameters": {
+											"p_DBName": {
+												"value": {
+													"value": "@pipeline().parameters.p_DBName",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"p_DBNameSource": {
+												"value": {
+													"value": "@pipeline().parameters.p_DBNameSource",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"p_directoryData": {
+												"value": {
+													"value": "@pipeline().parameters.p_directoryData",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"p_directoryLog": {
+												"value": {
+													"value": "@pipeline().parameters.p_directoryLog",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"p_directoryStandBy": {
+												"value": {
+													"value": "@pipeline().parameters.p_directoryStandBy",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"p_fileName": {
+												"value": {
+													"value": "@variables('V_max_file_name')",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"p_fileURL": {
+												"value": {
+													"value": "@concat(pipeline().parameters.p_adls_container_URL,'/',pipeline().parameters.P_adls_container_name, if(empty(pipeline().parameters.P_adls_folder),'',concat('/',pipeline().parameters.P_adls_folder)))",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "LS_SQLServer_ESA19",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "SP_Filevine_dB_User_Mapping",
+									"description": "grant access to Filevine db for different users",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "SP_restore_db",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "dbo.sp_Filevine_dB_User_Mapping"
+									},
+									"linkedServiceName": {
+										"referenceName": "LS_SQLServer_ESA19",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "DEL_files_archive",
+						"description": "delete the files from the archive container/folder",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "DEL_files_source",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ADLS_Blob",
+								"type": "DatasetReference",
+								"parameters": {
+									"P_container_name": {
+										"value": "@pipeline().parameters.P_adls_container_name_archive",
+										"type": "Expression"
+									},
+									"P_folder": {
+										"value": "@pipeline().parameters.P_adls_folder_archive",
+										"type": "Expression"
+									}
+								}
+							},
+							"logStorageSettings": {
+								"linkedServiceName": {
+									"referenceName": "LS_AzureBlobStorage",
+									"type": "LinkedServiceReference"
+								},
+								"path": {
+									"value": "@pipeline().parameters.P_container_del_log",
+									"type": "Expression"
+								}
+							},
+							"enableLogging": true,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": false,
+								"modifiedDatetimeEnd": {
+									"value": "@getPastTime(pipeline().parameters.P_days_in_archive,'Day')",
+									"type": "Expression"
+								},
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"P_adls_container_name": {
+						"type": "string",
+						"defaultValue": "fv-db-bak"
+					},
+					"P_adls_folder": {
+						"type": "string"
+					},
+					"P_adls_container_name_archive": {
+						"type": "string",
+						"defaultValue": "fv-db-bak-archive"
+					},
+					"P_adls_folder_archive": {
+						"type": "string"
+					},
+					"P_container_del_log": {
+						"type": "string",
+						"defaultValue": "fv-del-log"
+					},
+					"P_days_in_archive": {
+						"type": "int",
+						"defaultValue": 30
+					},
+					"p_DBName": {
+						"type": "string",
+						"defaultValue": "FileVine"
+					},
+					"p_DBNameSource": {
+						"type": "string",
+						"defaultValue": "OrgExport_FVtoFV_Migration"
+					},
+					"p_directoryData": {
+						"type": "string",
+						"defaultValue": "F:\\data"
+					},
+					"p_directoryLog": {
+						"type": "string",
+						"defaultValue": "F:\\log"
+					},
+					"p_adls_container_URL": {
+						"type": "string",
+						"defaultValue": "https://stfilevinedev.blob.core.windows.net"
+					},
+					"p_directoryStandBy": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"V_max_file_name": {
+						"type": "String"
+					},
+					"V_max_file_date": {
+						"type": "String"
+					},
+					"V_file_date": {
+						"type": "String"
+					},
+					"v_old_file_date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_ADLS_Blob')]",
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureBlobStorage')]",
+				"[concat(variables('factoryId'), '/linkedServices/LS_SQLServer_ESA19')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_send_email')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "WB_send_email",
+						"description": "Calls LogicApp to send email about the Pipeline execution status",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-00.eastus.logic.azure.com:443/workflows/983e98d3dd00428dacbcd2aec530164e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7ADe1Xb8AL_C8Mljs5ZQaYHn572MsiX7LHX9e9CrkVc",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@concat('{   \"DataFactoryName\": \"',string(pipeline().parameters.P_DataFactoryName),'\",\"EmailTo\": \"', string(pipeline().parameters.P_EmailTo),'\",\"Message\": \"', string(pipeline().parameters.P_Message),'\",\"PipelineName\": \"', string(pipeline().parameters.P_PipelineName),'\",\"Subject\": \"', string(pipeline().parameters.P_Subject),'\"}')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"P_EmailTo": {
+						"type": "string",
+						"defaultValue": "rpurushothaman@3cloudsolutions.com"
+					},
+					"P_DataFactoryName": {
+						"type": "string",
+						"defaultValue": "testdf"
+					},
+					"P_Message": {
+						"type": "string",
+						"defaultValue": "test message"
+					},
+					"P_Subject": {
+						"type": "string",
+						"defaultValue": "test sub"
+					},
+					"P_PipelineName": {
+						"type": "string",
+						"defaultValue": "test pipe"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_ADLS_Blob')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"P_container_name": {
+						"type": "string",
+						"defaultValue": "blob-s3"
+					},
+					"P_folder": {
+						"type": "string",
+						"defaultValue": "src"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().P_folder",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().P_container_name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureBlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_S3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AmazonS31",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"P_bucket": {
+						"type": "string",
+						"defaultValue": "export-filevine-5"
+					},
+					"P_folder": {
+						"type": "string",
+						"defaultValue": "database"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AmazonS3Location",
+						"bucketName": {
+							"value": "@dataset().P_bucket",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().P_folder",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AmazonS31')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_AmazonS31')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AmazonS3",
+				"typeProperties": {
+					"serviceUrl": "",
+					"accessKeyId": "[parameters('LS_AmazonS31_properties_typeProperties_accessKeyId')]",
+					"secretAccessKey": {
+						"type": "SecureString",
+						"value": "[parameters('LS_AmazonS31_secretAccessKey')]"
+					},
+					"authenticationType": "AccessKey"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_AzureBlobStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('LS_AzureBlobStorage_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_SQLServer_ESA19')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Linked service for ESA19 on-prem sql server db,",
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('LS_SQLServer_ESA19_connectionString')]",
+					"userName": "[parameters('LS_SQLServer_ESA19_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('LS_SQLServer_ESA19_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "IR-VM-ESA-A-SQL19",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/IR-VM-ESA-A-SQL19')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/IR-VM-ESA-A-SQL19')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"description": "Integration Runtime on  eas-a-sql19 VM",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		}
+	]
+}
